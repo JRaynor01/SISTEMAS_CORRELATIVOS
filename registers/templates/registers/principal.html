@@ -1,0 +1,67 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proyecto Correlativos</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" type="text/css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body>
+    <header>
+        <div id="titulo">
+            <div class="logo_a">
+                <img id="umsa" src="{% static 'images/u_logo.png' %}" alt="Logo">
+            </div>
+            <h1>Sistema Correlativos</h1>
+            <div class="logo_a">
+                <img id="conta" src="{% static 'images/logo.png' %}" alt="Logo">
+            </div>
+        </div>
+        <div id="nav_menu">
+            <div id="navega">
+                <nav>
+                    <div class="navicon">
+                        {{iniciales}}
+                    </div>
+                    <a href="{% url 'registers:registro' uservalues.id%}" >Ver Reportes</a>
+                    {% if uservalues.value == 'admin' %}<a href="{% url 'registers:upload'%}" >Subir Archivo</a>{% endif %}
+                    <a href="{% url 'registers:config' uservalues.id%}" >Configuracion</a>
+                    <a href="{% url 'registers:close' %}">Cerrar Sesion</a>
+                </nav>
+            </div>
+            <div class="cat" id="c">
+                {% for categoria in categorias %}
+                <a href="{% url 'registers:ticket' uservalues.id categoria.id%}">{{categoria.name_category}}</a> 
+                {% endfor %}
+                <a href="javascript:void(0);" class="icon" onclick="miFun()">
+                    <i class="fa fa-bars"></i>
+                </a>
+            </div>
+            <script>
+                function miFun() {
+                  var x = document.getElementById("c");
+                  if (x.className === "cat") {
+                    x.className += " responsive";
+                  } else {
+                    x.className = "cat";
+                  }
+                }
+            </script>
+        </div>
+    </header>
+    <main>
+        <section id="direccionales">
+            <div id="caja">
+                <a href="{% url 'registers:registro' uservalues.id%}">Ver Registros</a>   
+            </div>
+            <br>
+            <p>Seleccione una categoria de la barra superior roja para pedir un numero, para ver los registros selecciones el boton de ver registros
+            </p>  
+        </section>
+    </main>
+
+</body>
+</html>

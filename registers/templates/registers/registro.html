@@ -1,0 +1,166 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proyecto Correlativos</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body>
+    <header>
+        <header>
+            <div id="titulo">
+                <div class="logo_a">
+                    <img id="umsa" src="{% static 'images/u_logo.png' %}" alt="Logo">
+                </div>
+                <h1>Sistema Correlativos</h1>
+                <div class="logo_a">
+                    <img id="conta" src="{% static 'images/logo.png' %}" alt="Logo">
+                </div>
+            </div>
+            <div id="nav_menu">
+                <div id="navega">
+                    <nav>
+                        <div class="navicon">
+                            {{iniciales}}
+                        </div>
+                        {% if uservalues.value == 'admin' %}<a href="{% url 'registers:upload'%}" >Subir Archivo</a>{% endif %}
+                        <a href="{% url 'registers:config' uservalues.id%}" >Configuracion</a>
+                        <a href="{% url 'registers:close' %}">Cerrar Sesion</a>
+                        
+                    </nav>
+                </div>
+                <div class="cat" id="c">
+                    {% for categoria in categorias %}
+                    <a href="{% url 'registers:ticket' uservalues.id categoria.id%}">{{categoria.name_category}}</a> 
+                    {% endfor %}
+                    <a href="javascript:void(0);" class="icon" onclick="miFun()">
+                        <i class="fa fa-bars"></i>
+                    </a>
+                </div>
+                <script>
+                    function miFun() {
+                      var x = document.getElementById("c");
+                      if (x.className === "cat") {
+                        x.className += " responsive";
+                      } else {
+                        x.className = "cat";
+                      }
+                    }
+                </script>
+            </div>
+        </header>
+    </header>
+    <main>  
+    <article id="contenedor">
+        <section id="buscador">
+            <h4>BUSCADOR</h4>
+            <form action="{% url 'registers:buscador' uservalues.id%}" method="POST" >
+                {% csrf_token %}
+                <label for="nro">
+                    <span>Nro:</span>
+                    <input type="number" name="nro" id="nro" placeholder="#">
+                </label>
+                <label for="fecha_ini">
+                    <span>Fecha Inicio:</span>
+                    <input type="date" name="fecha_ini" id="fecha_ini" >
+                </label>
+                <label for="fecha_fin">
+                    <span>Fecha Fin:</span>
+                    <input type="date" name="fecha_fin" id="fecha_fin" >
+                </label>
+                <label for="categoria">
+                    <span>Categoria:</span>
+                    <input list="categorias" placeholder="Seleccione Categoria" name="categoria" id="categoria">
+                    <datalist name="categorias" id="categorias">
+                        {% if categorias %}
+                        {% for categori in categorias %}
+                        <option value="{{categori.name_category}}"></option>
+                        {% endfor %}
+                        {% endif %}
+                    </datalist>
+                </label>
+                <label for="responsable">
+                    <span>Responsable:</span>
+                    <input list="nombres" placeholder="Seleccione un Responsable" name="responsable" id="responsable">
+                    <!--<input list="nombres" placeholder="Seleccione Responsable" name="nombre" id="nombres">-->
+                    <datalist name="nombres" id="nombres">
+                        {% for user in users %}
+                        <option value="{{user.name}}"></option>
+                        {% endfor %}
+                    </datalist>
+                </label>
+                <label for="destinatario">
+                    <span>Destinatario:</span>
+                    <input type="text" name="destinatario" id="destinatario" placeholder="Dirigido a...">
+                </label>
+                <label id="esp" for="asunto">
+                    <span>Asunto:</span>
+                    <textarea name="asunto" id="asunto" rows="3" cols="20"></textarea>
+                </label>
+                <button type="submit" name="enviar" value="buscar">Buscar</button>
+                <button type="submit" name="enviar" value="Generar" >Generar  PDF</button>
+            </form>
+             
+             
+        </section>
+        {% if reporteseleg %}
+        <section id="guia">
+            <h3>RESULTADOS</h3>
+        </section>
+        <section id="cont">
+        {% for key, value in reporteseleg.items %}
+            <section id="resultados">
+                <section class="cabecera">
+                    <span>Correlativo</span>
+                </section>
+                <section class="informacion">
+                    <form action="">
+                        <label for="r_nro">
+                            <span>Nro:</span>
+                            <input type="text" name="r_nro" id="r_nro" value="{{value.number}}" readonly>
+                        </label>
+                        <label for="r_fecha">
+                            <span>Fecha:</span>
+                            <input type="text" name="r_fecha" id="r_fecha" value="{{value.pub_date}}" readonly >
+                        </label>
+                        <label for="r_categoria">
+                            <span>Categoria:</span>
+                            <input type="text" name="r_categoria" id="r_categoria" value="{{value.categoria}}" readonly>
+                        </label>
+                        <label for="r_responsable">
+                            <span>Responsable:</span>
+                            <input type="text" name="r_responsable" id="r_responsable"  value="{{value.responsable}}" readonly>
+                        </label>
+                        <label for="r_destinatario">
+                            <span>Destinatario:</span>
+                            <input type="text" name="r_destinatario" id="r_destinatario" value="{{value.destinatario}}" readonly>
+                        </label>
+                        <label id="esp2" for="r_asunto">
+                            <span>Asunto:</span>
+                            <textarea name="r_asunto" id="r_asunto" rows="3" cols="20" readonly> {{value.asunto}}</textarea>
+                        </label>
+                        {% if uservalues.value == "admin" %}
+                        {% if value.url %}
+                       
+                        <label for="url">
+                            <a id="pdf_b" href="{{value.url.uploadedFile.url}}" >Ver PDF</a>
+                        </label>
+                       
+                        {% endif %}
+                        {% endif %}
+                        
+                    </form>
+                </section>
+            </section>
+        {% endfor %}
+        {% endif %}
+    </section>
+       
+    </article>
+    </main>
+</body>
+</html>

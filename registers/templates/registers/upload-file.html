@@ -1,0 +1,98 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proyecto Correlativos</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" type="text/css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body>
+    <header>
+        <div id="titulo">
+            <div class="logo_a">
+                <img id="umsa" src="{% static 'images/u_logo.png' %}" alt="Logo">
+            </div>
+            <h1>Sistema Correlativos</h1>
+            <div class="logo_a">
+                <img id="conta" src="{% static 'images/logo.png' %}" alt="Logo">
+            </div>
+        </div>
+        <div id="nav_menu">
+            <div id="navega">
+                <nav>
+                    <div class="navicon">
+                        {{iniciales}}
+                    </div>
+                    <a href="{% url 'registers:registro' uservalues.id%}" >Ver Reportes</a>
+                    <a href="{% url 'registers:config' uservalues.id%}" >Configuracion</a>
+                    <a href="{% url 'registers:close' %}">Cerrar Sesion</a>
+                </nav>
+            </div>
+            <div class="cat" id="c">
+                {% for categoria in categorias %}
+                <a href="{% url 'registers:ticket' uservalues.id categoria.id%}">{{categoria.name_category}}</a> 
+                {% endfor %}
+                <a href="javascript:void(0);" class="icon" onclick="miFun()">
+                    <i class="fa fa-bars"></i>
+                </a>
+            </div>
+            <script>
+                function miFun() {
+                  var x = document.getElementById("c");
+                  if (x.className === "cat") {
+                    x.className += " responsive";
+                  } else {
+                    x.className = "cat";
+                  }
+                }
+            </script>
+        </div>
+    </header>
+    <main>  
+        <article id="pdf">
+            <section id="e_pdf">
+                <h2>Ingrese PDF</h2>
+            </section>
+        
+            <section id="c_pdf">
+                <form action="{% url 'registers:uploadFile' %}" method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    
+                    {% if files %}
+                        <p><strong>{{files}}</strong></p>
+                    {% endif %}
+                    <label for="numero">
+                        <span>Numero:</span>
+                        <input type="int" name="numero" placeholder="Numero" required>
+                    </label>
+                    <label for="año">
+                        <span>Año:</span>
+                        <input type="int" name="año" placeholder="Ingrese el año" required>
+                    </label>
+                    <label for="categoria">
+                        <span>Categoria:</span>
+                        <input list="categorias" placeholder="Seleccione Categoria" name="categoria" id="categoria" required>
+                        <datalist name="categorias" id="categorias">
+                            <option value="Resoluciones de Direccion"></option>
+                            <option value="Proyectos de resolucion"></option>
+                            <option value="Memorandums"></option>
+                            <option value="Comunicados"></option>
+                            <option value="Citaciones"></option>
+                            <option value="Circulares"></option>
+                            <option value="Certificados"></option>
+                        </datalist>
+                    </label>
+                    <label for="archivo" id="aqw">
+                        <span>PDF</span>
+                        <input type="file" name="archivo" class="custom-file-input" id="arc" accept=".pdf">
+                    </label>
+                    <input type="submit" class="subir" value="Subir Archivo">
+                </form>
+            </section>
+        </article>
+    </main>
+</body>
+</html>

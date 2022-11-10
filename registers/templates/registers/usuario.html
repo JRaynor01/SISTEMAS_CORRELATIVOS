@@ -1,0 +1,111 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proyecto Correlativos</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body>
+    <header>
+        <div id="titulo">
+            <div class="logo_a">
+                <img id="umsa" src="{% static 'images/u_logo.png' %}" alt="Logo">
+            </div>
+            <h1>Sistema Correlativos</h1>
+            <div class="logo_a">
+                <img id="conta" src="{% static 'images/logo.png' %}" alt="Logo">
+            </div>
+        </div>
+        <div id="nav_menu">
+            <div id="navega">
+                <nav>
+                    <div class="navicon">
+                        {{iniciales}}
+                    </div>
+                    
+                    <a href="{% url 'registers:registro' uservalues.id%}" >Ver Reportes</a>
+                    {% if uservalues.value == 'admin' %}<a href="{% url 'registers:upload'%}" >Subir Archivo</a>{% endif %}
+                    <a href="{% url 'registers:close' %}">Cerrar Sesion</a>
+                </nav>
+            </div>
+            <div class="cat" id="c">
+                {% for categoria in categorias %}
+                <a href="{% url 'registers:ticket' uservalues.id categoria.id%}">{{categoria.name_category}}</a> 
+                {% endfor %}
+                <a href="javascript:void(0);" class="icon" onclick="miFun()">
+                    <i class="fa fa-bars"></i>
+                </a>
+            </div>
+            <script>
+                function miFun() {
+                  var x = document.getElementById("c");
+                  if (x.className === "cat") {
+                    x.className += " responsive";
+                  } else {
+                    x.className = "cat";
+                  }
+                }
+            </script>
+        </div>
+    </header>
+    <main>
+        <section id="login_u">
+            <form name="cc" method="POST" action="{% url 'registers:change' uservalues.id %}">
+                {% csrf_token %}
+                <h2>Cambio de Contraseña</h2>
+                <label for="usuario">
+                    <span>Usuario: </span>
+                    <input type="text" name="usuario" id="usuario" readonly value="{{uservalues.name}}">
+                </label>
+                <label for="clave">
+                    <span>Contraseña: </span>
+                    <input type="password" name="clave" id="clave" minlength="8" maxlength="20" pattern="[A-Za-z0-9]+" required > 
+                </label>
+                <label for="claveN">
+                    <span>Confirme contraseña: </span>
+                    <input type="password" name="claveN" id="claveN" minlength="8" maxlength="20" pattern="[A-Za-z0-9]+" required >
+                </label>
+                <button type="submit" value="enviar" onclick="valida()">Cambiar Contraseña</button>
+            </form>
+            
+            <script>
+                function valida(){
+                    var f = document.cc;
+                    var c1=f[2].value;
+                    var c2=f[3].value;
+                    var c=0;
+                    if(c1==""||c1==" "||c2==""||c2==" "){
+                        alert("Llene los datos");
+                    }else{
+                        var l=c1.length
+                        //console.log(l);
+                        if(l>7){
+                            if(c1 === c2){
+                                alert("Contraseña Cambiada");
+                                c=1;
+                                //console.log("Formulario enviado");
+                            }else{
+                                alert("Contraseñas diferentes");
+                                //console.log("Formulario no enviado");
+                            }
+                        }else{
+                            alert("Minimo 8 digitos");
+                        }
+                    }
+                    if(c==1){
+                        f.submit();
+                    }else{
+                        event.preventDefault();
+                    }
+                }
+            </script>
+            
+        </section>
+    </main>
+
+</body>
+</html>

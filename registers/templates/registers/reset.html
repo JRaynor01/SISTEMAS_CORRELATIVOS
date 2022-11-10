@@ -1,0 +1,49 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proyecto Correlativos</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <!--<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+    -->
+</head>
+<body>
+    <header>  
+        <div id="titulo">
+            <div class="logo_a">
+                <img id="umsa" src="{% static 'images/u_logo.png' %}" alt="Logo">
+            </div>
+            <h1>Sistema Correlativos</h1>
+            <div class="logo_a">
+                <img id="conta" src="{% static 'images/logo.png' %}" alt="Logo">
+            </div>
+        </div>
+        <div id="nav_menu">
+            
+        </div>
+    </header>
+    <main>
+        <section id="login_usuario">
+            <form action=" {% url 'registers:resetpass' %}" method="POST">
+                {% csrf_token %}
+                <h2>Inicio Sesion Recuperacion</h2>
+                {% if error %}
+                <p><strong>{{error}}</strong></p>{% endif %}
+                <label for="usuario">
+                    <span>Usuario: </span>
+                    <input type="text" name="usuario" id="usuario">
+                </label>
+                <label for="clave">
+                    <span>Cont. Temp.: </span>
+                    <input type="password" name="password" id="clave">
+                </label>
+                <input id="ingresar" type="submit" value="Entrar">
+            </form>
+        </section>
+    </main>
+
+</body>
+</html>
